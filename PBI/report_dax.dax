@@ -1,0 +1,165 @@
+﻿DEFINE 
+---- MODEL MEASURES BEGIN ----
+MEASURE f_Compras[Ingresos_Todas_Campañas] = 
+CALCULATE(
+    SUMX(
+        FILTER(
+            DimCliente,
+            DimCliente[ID] IN (
+                SELECTCOLUMNS(
+                    f_compras_text,
+                    "Cliente_ID", f_Compras_text[ID]
+                )
+            )
+        ),
+        DimCliente[Income]
+    )
+)
+
+MEASURE 'Total Participantes Campaña 1'[Average Income] = AVERAGE('DimCliente'[Income])
+MEASURE 'Total Participantes Campaña 1'[Avg Recency] = AVERAGE(f_Compras[Recency])
+MEASURE 'Total Participantes Campaña 1'[CampaignName] = 
+VAR Campaign1 = "Campaign 1"
+VAR Campaign2 = "Campaign 2"
+VAR Campaign3 = "Campaign 3"
+VAR Campaign4 = "Campaign 4"
+VAR Campaign5 = "Campaign 5"
+VAR ResponseCampaign = "Response Campaign"
+RETURN
+SWITCH(
+    TRUE(),
+    'f_compras'[AcceptedCmp1] = 1, Campaign1,
+    'f_compras'[AcceptedCmp2] = 1, Campaign2,
+    'f_compras'[AcceptedCmp3] = 1, Campaign3,
+    'f_compras'[AcceptedCmp4] = 1, Campaign4,
+    'f_compras'[AcceptedCmp5] = 1, Campaign5,
+    'f_compras'[Response] = 1, ResponseCampaign,
+    BLANK()
+)
+MEASURE 'Total Participantes Campaña 1'[Clientes Aceptaron Campaña 1] = 
+CALCULATE(
+    COUNTROWS('f_compras'),
+    'f_compras'[AcceptedCmp1] = 1
+)
+MEASURE 'Total Participantes Campaña 1'[Clientes Aceptaron Campaña 2] = 
+CALCULATE(
+    COUNTROWS('f_compras'),
+    'f_compras'[AcceptedCmp2] = 1
+)
+MEASURE 'Total Participantes Campaña 1'[Clientes Aceptaron Campaña 3] = 
+CALCULATE(
+    COUNTROWS('f_compras'),
+    'f_compras'[AcceptedCmp3] = 1
+)
+MEASURE 'Total Participantes Campaña 1'[Clientes Aceptaron Campaña 4] = 
+CALCULATE(
+    COUNTROWS('f_compras'),
+    'f_compras'[AcceptedCmp4] = 1
+)
+
+MEASURE 'Total Participantes Campaña 1'[Clientes Aceptaron Campaña 5] = 
+CALCULATE(
+    COUNTROWS('f_compras'),
+    'f_compras'[AcceptedCmp5] = 1
+)
+
+MEASURE 'Total Participantes Campaña 1'[Clientes Aceptaron Respuesta] = 
+CALCULATE(
+    COUNTROWS('f_compras'),
+    'f_compras'[Response] = 1
+)
+MEASURE 'Total Participantes Campaña 1'[ClientesAceptaron] = 
+SUM('f_compras'[AcceptedCmp1]) +
+SUM('f_compras'[AcceptedCmp2]) +
+SUM('f_compras'[AcceptedCmp3]) +
+SUM('f_compras'[AcceptedCmp4]) +
+SUM('f_compras'[AcceptedCmp5]) +
+SUM('f_compras'[Response])
+MEASURE 'Total Participantes Campaña 1'[Count Clients] = COUNTROWS('DimCliente')
+MEASURE 'Total Participantes Campaña 1'[Dependents] = SUMX('marketing_campaign', 'marketing_campaign'[Kidhome]) + SUMX('marketing_campaign', 'marketing_campaign'[Teenhome])
+MEASURE 'Total Participantes Campaña 1'[FiltroCampaña1] = IF(SELECTEDVALUE('f_Compras'[AcceptedCmp1]) = 1, TRUE(), FALSE())
+MEASURE 'Total Participantes Campaña 1'[FiltroCampaña2] = IF(SELECTEDVALUE('f_Compras'[AcceptedCmp2]) = 1, TRUE(), FALSE())
+MEASURE 'Total Participantes Campaña 1'[FiltroCampaña3] = IF(SELECTEDVALUE('f_Compras'[AcceptedCmp3]) = 1, TRUE(), FALSE())
+MEASURE 'Total Participantes Campaña 1'[FiltroCampaña4] = IF(SELECTEDVALUE('f_Compras'[AcceptedCmp4]) = 1, TRUE(), FALSE())
+MEASURE 'Total Participantes Campaña 1'[FiltroResponse] = IF(SELECTEDVALUE('f_Compras'[Response]) = 1, TRUE(), FALSE())
+MEASURE 'Total Participantes Campaña 1'[Ingresos_Response] = 
+    CALCULATE(
+        SUM('DimCliente'[Income]),
+        'f_Compras_text'[Response] = TRUE
+    )
+
+MEASURE 'Total Participantes Campaña 1'[Sells_by_campaign_1] = CALCULATE('Total Participantes Campaña 1'[Total Purchases], 'f_compras_text'[AcceptedCmp1] = TRUE)
+MEASURE 'Total Participantes Campaña 1'[Sells_by_campaign_2] = CALCULATE('Total Participantes Campaña 1'[Total Purchases], 'f_compras_text'[AcceptedCmp2] = TRUE)
+MEASURE 'Total Participantes Campaña 1'[Sells_by_campaign_3] = CALCULATE('Total Participantes Campaña 1'[Total Purchases], 'f_compras_text'[AcceptedCmp3] = TRUE)
+MEASURE 'Total Participantes Campaña 1'[Sells_by_campaign_4] = CALCULATE('Total Participantes Campaña 1'[Total Purchases], 'f_compras_text'[AcceptedCmp4] = TRUE)
+MEASURE 'Total Participantes Campaña 1'[Sells_by_campaign_5] = CALCULATE('Total Participantes Campaña 1'[Total Purchases], 'f_compras_text'[AcceptedCmp5] = TRUE)
+MEASURE 'Total Participantes Campaña 1'[Sells_by_campaign_R] = CALCULATE('Total Participantes Campaña 1'[Total Purchases], 'f_Compras_text'[Response] = TRUE)
+MEASURE 'Total Participantes Campaña 1'[Tasa Aceptación Campaña 1 (%)] = 
+DIVIDE([Clientes Aceptaron Campaña 1], [Total Participantes]) * 100
+MEASURE 'Total Participantes Campaña 1'[Tasa Aceptación Campaña 2 (%)] = 
+DIVIDE([Clientes Aceptaron Campaña 2], [Total Participantes]) * 100
+MEASURE 'Total Participantes Campaña 1'[Tasa Aceptación Campaña 3 (%)] = 
+DIVIDE([Clientes Aceptaron Campaña 3], [Total Participantes]) * 100
+MEASURE 'Total Participantes Campaña 1'[Tasa Aceptación Campaña 4 (%)] = 
+DIVIDE([Clientes Aceptaron Campaña 4], [Total Participantes]) * 100
+MEASURE 'Total Participantes Campaña 1'[Tasa Aceptación Campaña 5 (%)] = 
+DIVIDE([Clientes Aceptaron Campaña 5], [Total Participantes]) * 100
+MEASURE 'Total Participantes Campaña 1'[Tasa Aceptación Campaña Response (%)] = 
+DIVIDE([Clientes Aceptaron Respuesta], [Total Participantes]) * 100
+MEASURE 'Total Participantes Campaña 1'[TasaAceptacionGlobal] = 
+DIVIDE([ClientesAceptaron], [Total Participantes], 0)
+MEASURE 'Total Participantes Campaña 1'[Total Accepted Cmp] = (SUMX(marketing_campaign, marketing_campaign[AcceptedCmp1] + 'marketing_campaign'[AcceptedCmp2] + 
+    'marketing_campaign'[AcceptedCmp3] + 
+    'marketing_campaign'[AcceptedCmp4] + 
+    'marketing_campaign'[AcceptedCmp5] +
+    'marketing_campaign'[Response]))
+MEASURE 'Total Participantes Campaña 1'[Total Clients] = COUNTROWS('DimCliente')
+MEASURE 'Total Participantes Campaña 1'[Total Inc. Campaigns] = CALCULATE(
+    DISTINCTCOUNT('f_Compras'[ID]), 
+    'f_Compras'[AcceptedCmp1] = 1 || 'f_Compras'[AcceptedCmp2] = 1 ||
+    'f_Compras'[AcceptedCmp3] = 1 || 'f_Compras'[AcceptedCmp4] = 1 ||
+    'f_Compras'[AcceptedCmp5] = 1 || 'f_compras'[Response] = 1
+)
+
+MEASURE 'Total Participantes Campaña 1'[Total Income] = SUM(DimCliente[Income])
+MEASURE 'Total Participantes Campaña 1'[Total Participantes] = 
+COUNTROWS('f_compras')
+MEASURE 'Total Participantes Campaña 1'[Total Purchases] = 
+    SUMX(
+        'marketing_campaign',
+        'marketing_campaign'[Discount_Purchases] + 
+    'marketing_campaign'[Web_Purchases] + 
+    'marketing_campaign'[Catalog_Purchases] + 
+    'marketing_campaign'[Store_Purchases]
+    )
+MEASURE 'Total Participantes Campaña 1'[Total_Compras_Campaña_1] = 
+    CALCULATE(
+        SUM('Total Participantes Campaña 1'[TotalPurchases]),
+        'f_compras_text'[AcceptedCmp1] = TRUE
+    )
+MEASURE 'Total Participantes Campaña 1'[Total_Mnt] = 
+    SUMX(
+        'marketing_campaign',
+        'marketing_campaign'[Wines] + 
+        'marketing_campaign'[Fruits] + 
+        'marketing_campaign'[Meat] + 
+        'marketing_campaign'[Fish] + 
+        'marketing_campaign'[Sweet] + 
+        'marketing_campaign'[Gold]
+    )
+
+MEASURE 'Total Participantes Campaña 1'[Total_Products_Sold_All_Campaigns] = 
+    [Sells_by_campaign_1] + [Sells_by_campaign_2] + [Sells_by_campaign_3] + [Sells_by_campaign_4] + [Sells_by_campaign_5] + [Sells_by_campaign_R]
+
+MEASURE 'Total Participantes Campaña 1'[TotalAcceptedCmp1] = SUM('f_compras'[AcceptedCmp1])
+MEASURE 'Total Participantes Campaña 1'[TotalAcceptedCmp2] = SUM('f_compras'[AcceptedCmp2])
+MEASURE 'Total Participantes Campaña 1'[TotalAcceptedCmp3] = SUM('f_compras'[AcceptedCmp3])
+MEASURE 'Total Participantes Campaña 1'[TotalAcceptedCmp4] = SUM('f_compras'[AcceptedCmp4])
+MEASURE 'Total Participantes Campaña 1'[TotalAcceptedCmp5] = SUM('f_compras'[AcceptedCmp5])
+MEASURE 'Total Participantes Campaña 1'[TotalAcceptedResponse] = SUM('f_Compras'[Response])
+MEASURE 'Total Participantes Campaña 1'[TotalGold] = SUM('f_compras'[Gold])
+MEASURE 'Total Participantes Campaña 1'[TotalSweet] = SUM('f_compras'[Sweet])
+
+MEASURE 'Total Participantes Campaña 1'[TotalWines] = SUM('f_compras'[Wines])
+---- MODEL MEASURES END ----
+
