@@ -1,7 +1,7 @@
 # Power BI Marketing Consultant Report
 
 ## Overview
-
+![Power BI Marketing Report](Screenshots/General_dashboard.png)
 This repository contains a **Power BI** report focused on marketing analysis. The report provides key insights into the performance of various marketing campaigns, customer segmentation, and overall business growth strategies. The visualizations and data analysis in the report help decision-makers understand key trends and make data-driven decisions.
 
 ### Key Insights:
